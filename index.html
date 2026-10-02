@@ -645,7 +645,7 @@
   <div class="wrap">
     <svg class="trail-mark center reveal" aria-hidden="true"><use href="#trail-mount"/></svg>
     <span class="eyebrow reveal">Assista</span>
-    <h2 class="section-title reveal d1">Recomeço contado por quem viveu</h2>
+    <h2 class="section-title reveal d1">Recomeço contado por quem precisou recomeçar</h2>
     <div class="video-feature-card reveal d3" data-video>
       <video preload="metadata" playsinline src="assets/videos/video-recomecar-completo.mp4#t=1"></video>
       <div class="play">
@@ -1135,7 +1135,12 @@
   const io = new IntersectionObserver(entries=>{
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
   },{threshold:.12,rootMargin:'0px 0px -30px 0px'});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  document.querySelectorAll('.reveal:not(.trail-mark)').forEach(el=>io.observe(el));
+  // a trilha começa recortada (clip-path), então observa o bloco ao redor dela
+  const trailIo = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.querySelectorAll(':scope > .trail-mark.reveal').forEach(t=>t.classList.add('in')); trailIo.unobserve(e.target); } });
+  },{threshold:0,rootMargin:'0px 0px -30px 0px'});
+  document.querySelectorAll('.trail-mark.reveal').forEach(t=>trailIo.observe(t.parentElement));
   document.querySelectorAll('.hero .reveal').forEach((el,i)=> setTimeout(()=>el.classList.add('in'), 180+i*160));
 
   // hero teaser video fade-in once playable
